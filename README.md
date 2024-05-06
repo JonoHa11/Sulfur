@@ -5,6 +5,7 @@ This report compares the effects of adding a nitrogen and sulfur-rich protein fe
 - [Details](#details)
 - [Folder Structure](#folder-structure)
 - [Software Requirements](#software-requirements)
+- [Usage](#usage)
 
 ## Details
 - Start date: 2024-05-04
@@ -75,6 +76,20 @@ This report compares the effects of adding a nitrogen and sulfur-rich protein fe
 
 - Microsoft Excel for Microsoft 365 MSO x64 (Version 2403)
 
+## Usage
 
-   
-   
+#### Running the Code
+
+1. Open command prompt
+2. Copy repository
+```bash
+git clone https://github.com/JonoHa11/Sulfur.git
+```
+3. Naviagte to project directory
+```bash
+cd Sulfur
+```
+
+4. Install Quarto
+Follow the instructions [here](quarto-lang.com/docs/getting-started/install/) to install Quarto.
+
