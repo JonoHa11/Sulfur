@@ -2,7 +2,7 @@
 This report compares the effects of adding a nitrogen and sulfur-rich protein feedstocks to sewage sludge under anaerobic digestion, using hexanaote as a control feedstock. It analyses VFA degradation and pH trend, and uses a first-order kinetic model to determine methane production rate.7
 
 ## Table of Contents
-- [Information](##Information)
+- [Information](#information)
 - [Folder Structure](##Folder_Structure)
 - [Contributing](#contributing)
 - [License](#license)
