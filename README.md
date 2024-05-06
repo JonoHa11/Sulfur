@@ -46,6 +46,8 @@ This report compares the effects of adding a nitrogen and sulfur-rich protein fe
 
 ## Software Requirements
 
+
+
 #### R
 
 - Version: 4.3.3
@@ -89,7 +91,15 @@ git clone https://github.com/JonoHa11/Sulfur.git
 ```bash
 cd Sulfur
 ```
-
 4. Install Quarto
-Follow the instructions [here](quarto-lang.com/docs/getting-started/install/) to install Quarto.
+Follow the instructions [here](https://quarto.org/docs/get-started/) to install Quarto.
+5. Run Quarto to generate the report
+```bash
+quarto render report.qmd
+```
 
+#### Building Reports
+
+1. Download raw data from the 'data/raw' directory
+2. Run the code from the report.qmd file in R to generate the figures.
+3. Figures will be generated in the 'images' directory
