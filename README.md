@@ -3,12 +3,14 @@ This report compares the effects of adding a nitrogen and sulfur-rich protein fe
 
 ## Table of Contents
 - [Information](##Information)
-- [Usage](#usage)
+- [Usage](##Folder_Structure)
 - [Contributing](#contributing)
 - [License](#license)
 
 ## Information
-Start date: 04/05/2024
-Last updated: 06/05/2024
-Conctact Info: jh3500@york.ac.uk
+- Start date: 04/05/2024
+- Last updated: 06/05/2024
+- Conctact Info: jh3500@york.ac.uk
+
+## Folder Structure
 
