@@ -1,0 +1,1597 @@
+---
+title: "Analysis of Sulfur and Nitrogen in Anaerobic Digestion"
+author: "Jonathan Hall"
+format:
+  pdf:
+    documentclass: article
+    fig-pos: 'H'
+    papersize: A4
+    mainfont: Calibri
+    linestretch: 1.5
+    geometry:
+      - top=20mm
+      - left=25mm
+      - right=25mm
+engine: knitr
+execute:
+  echo: false
+  include: true
+  error: false
+  message: false
+  warning: false
+crossref:
+  fig-title: '**Figure**'
+  custom:
+    - kind: float
+      key: suppfig
+      latex-env: suppfig
+      reference-prefix: Figure S
+      space-before-numbering: false
+    - kind: float
+      key: suppfile
+      latex-env: suppfile
+      reference-prefix: File S
+      space-before-numbering: false
+      caption-location: top
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+```{r}
+#| label: packages
+#| include: false
+# Load tidyverse package
+library(tidyverse)
+```
+
+# Abstract
+
+This study investigates the impact of nitrogen and sulfur on anaerobic
+digestion (AD) systems, using keratin (high sulfur, high nitrogen) and
+casein (low sulfur, high nitrogen) as feedstocks. With the global food
+processing industry generating vast quantities of poultry feathers and
+casein whey annually, efficient disposal methods are imperative. Whilst
+previous studies have focussed on the inhibitory aspects of sulfur and
+nitrogen, this study aims to understand the potential synergy between
+the two by adding concentrations at a reportedly beneficial level. A
+hexanoate feedstock was used as a control due to containing no nitrogen
+or sulfur. The feedstocks were added to separate vials containing sewage
+sludge and sampled regularly across a 192 hour time period. The
+monitoring of pH revealed that nitrogen in the form of ammonia buffered
+the pH between 7.5 and 8, slightly above the optimal range for
+methanogens. VFA concentrations, measured using GC-FID, showed
+isopentanoate accumulation for the keratin-treated sludge, an indication
+of system instability. An iterative inverse model was used to calculate
+the degradation rates of acetate as an indicator for methane production
+rate. The model revealed that casein has a slighlty faster degradation
+rate of k = 0.63, compared to keratins at k = 0.69. However, the
+discrepancy between the GC-FID and model VFA data, due to the extensive
+list of assumptions made, makes the k–values provided unreliable.
+
+# Introduction
+
+The worldwide food processing industry generates 40 million tons of
+poultry feathers annually (Tesfaye et al., 2017). As the demand for
+feathers is relatively low, most are disposed in landfills (Gao et al.,
+2014; Wang et al., 2020), and initally undergo aerobic digestion. Once
+anaerobic conditions form, typically taking less than a year for
+landfills, microorganisms break down the metabolic byproducts of aerobic
+digestion, producing methane gas (Patinvoh et al., 2016). However, the
+use of landfills can lead to the spread of diseases, such as fowl
+cholera and avian mycoplasmosis (Agrahari and Wadhwa, 2010).
+Incineration and chemical decomposition are other common methods of
+feather disposal, however these can be expensive and hazardous (Gupta
+and Ramnani, 2006).
+
+Anaerobic digestion (AD) has become the most used technique for the
+treatment of mixed food waste due to its dependability as a renewable
+source of methane (Kannan et al., 2024). In AD, proteins are hydrolysed
+into amino acids, which are then converted to volatile fatty acids
+(VFAs) during acidogenesis (Czatzkowska et al., 2020). Acetogens convert
+VFAs, such as hexanoate (C~6~H~12~O~2~) and butyrate (C~4~H~8~O~2~),
+into acetate (C~2~H~3~O~2~), CO~2~, and H~2~ (Czatzkowska et al., 2020).
+Methanogens then convert acetate to methane (Czatzkowska et al., 2020).
+Using this technique on poultry feathers would be an ideal solution to
+combat the inefficient disposal of feathers.
+
+However, the high degree of disulfide bonds in feathers make
+pretreatment a requirement for decomposition in AD (Friedrich and
+Antranikian, 1996; Kunert, 1972). This is due keratin, a protein making
+up \>90% of feathers, containing a high proportion of cysteine (16.3%),
+a sulfur-containing amino acid (Block et al., 1939; Leon, 1972). This
+makes keratin a sulfur-rich (5%) protein (Leon, 1972), as well as
+nitrogen-rich (15.9%) (Block et al., 1939; Leon, 1972).
+
+Casein whey, a protein produced by the dairy industry, is also
+nitrogen-rich (13.4%) (Wagner et al., 2012). Approximately half of whey
+produced globally is disposed of as waste effluent, posing a major
+environmental problem due to its high pollution load (Gelegenis et al.,
+2007). The high biological oxygen demand (BOD) of whey makes anaerobic
+digestion the only viable solution for treating this wastewater
+(Gelegenis et al., 2007). Unlike keratin, casein is a sulfur-poor
+protein (0.78%) (Kassel and Brand, 1938).
+
+Ammonia and sulfate are produced from feedstocks containing nitrogen and
+sulfur, and in high enough concentrations, can lead to problems within
+the AD system (Hansen et al., 1998; Zhang et al., 2022). The most common
+upset is over-acidification, caused by the imbalance in VFA production
+and consumption rate (Babel et al., 2004; Siegert and Banks, 2005).
+Fischer et al. (1983) report that the accumulation of isomatic VFAs are
+a good indicator of process instability. VFA accumulation can have
+severe consequences on methanogens due to having a narrow optimal pH
+range of 6.5 to 7.5 (Liu et al., 2008; Zhang et al., 2015).
+
+Very few studies have reported the direct relationship between sulfur
+and pH. Tian et al. (2020) reported a causal relationship between the
+two due to an inverse relationship between HS^-^ + S^2-^ and OH^-^,
+however no studies have reported similar findings since. On the other
+hand, ammonia is widely known to act as a buffer in AD systems (Fricke
+et al., 2007; McCarty, 1964; Zhang et al., 2016). This is due to
+ammonia’s ability to bind to H^+^ ions by shifting its ammonia-ammonium
+equilibrium when the system becomes too acidic (McCarty, 1964).
+
+High levels of sulfate and acidity create the ideal environment for
+sulfate-reducing bacteria, which compete with microbes for organic
+substrates (Liu et al., 2015). They further inhibit AD through the
+production of hydrogen sulfide (H~2~S) during sulfate reduction, which
+can easily diffuse through the cell membrane of microbes and denature
+their primary proteins (Tursman and Cork, 1989). Multiple studies report
+that the inhibitory effects of sulfide begin at 50 – 60mg S/l (Cheung,
+2004; Parkin et al., 1990). Studies also report that high ammonia
+concentrations can reduce the presence of both H~2~S and
+sulfate-reducing bacteria (Dai et al., 2017; Yan et al., 2018). This is
+likely due to the prevention of an acidic environment, as well as the
+inhibitory effects of ammonia toxicity on sulfate-reducing bacteria (Dai
+et al., 2017). Multiple studies have reported that the inhibitory
+effects of ammonia begin at 1000mg/l (Duan et al., 2012; Hejnfelt and
+Angelidaki, 2009; Kotsyurbenko et al., 2004; McCarty, 1964), with higher
+concentrations leading to a greater reduction in methane production.
+
+Sulfide is an especially important compound for methanogens, containing
+the highest concentration of sulfur than any other microbe in AD
+(Speece, 1983). Balch and Wolfe (1979) reported that all methanogens
+exhibit high levels of co-enzyme M (2-mercaptoethanesulfonic acid), a
+sulfur-rich cofactor that had been reported on a few years before to be
+critical for methane production in methanogens (Balch and Wolfe, 1976).
+Sulfide concentrations of 1 to 25mg S/l is optimal for methanogenesis in
+anaerobic digestion (Scherer and Sahm, 1981). The benefits of sulfur on
+methanogens are still not completely understood, as most studies focus
+on its inhibitory impact and removal from AD systems (Sürmeli et al.,
+2019; Vu et al., 2022). However, some sources have reported increased
+methane production and methanogen growth when sulfur or cysteine is
+added to AD systems (Rönnow and Gunnarsson, 1982; Yekta et al., 2022;
+Zan et al., 2019; Zhang and Maekawa, 1996). One study looking into the
+effect of high and low ammonia and sulfide concentrations on
+methanogenesis found that an increase in ammonia doubled methanogen
+growth, whereas a higher sulfide concentration increased methane
+production (Rönnow and Gunnarsson, 1982). This gives insight into the
+role these two compounds play in methanogenesis.
+
+The use of animal waste feedstock in anaerobic digestion can be a
+solution for both inefficient animal waste disposal, and the demand for
+renewable energy. At the right concentration, nitrogen and sulfur appear
+to be beneficial for AD systems. However, they can be inhibitory if the
+concentration is too high. To analyse the effect of sulfur- and
+nitrogen-rich proteins on the AD system, this study will use keratin and
+casein as separate feedstocks in sewage sludge under AD, and compare
+their pH, VFA concentration. Methane production rate will also be
+calculated using a first-order kinetics model, called iterative inverse
+modelling. A hexanoate feedstock will be used as a control due to being
+nitrogen- and sulfur-free.
+
+This study hypothesises that keratin, due to being sulfur- and
+nitrogen-rich, will be beneficial to methanogens the most, resultint in
+a faster methane production rate than casein. It is also hypothesised
+that both proteins will maintain a neutral pH due to the ammonia buffer,
+whereas hexanoate will be more acidic. This study aims to contribute to
+our understanding of the synergistic relationship between sulfur and
+nitrogen, particularly in the context of using animal/food waste as
+feedstocks in anaerobic digestion.
+
+# Methods
+
+### Sampling
+
+Sewage sludge samples were gifted from Naburn wastewater treatment
+facility. Samples were screened, aerated, and held within an
+industrial-scale AD reactor before collection. Samples were mixed, then
+30mls were placed into 120ml serum vials. Vials were capped using Viton
+stoppers and incubated at 40°C for 2 weeks before feeding.
+
+1ml of sodium hexanoate (0.0124 mol) was added to each vial, coming to a
+concentration of 4mM. A sample was taken immediately before and after
+the first hexanoate feeding. Four more samples were taken at 3h, 6h,
+24h, and 48h after feeding. At 48h, a second feeding of hexanoate
+occured and was immediately sampled. Four more samples were taken at
+51h, 54h, 72h, and 78h after the first feeding. Each timepoint had three
+replicates.
+
+Keratin (Hydrolysed Keratin, Vedaoils; 2200da) was diluted to a
+concentration of 1.5g/100ml in distilled water at a pH of 8. Casein
+(Bovine Milk, Sigma-Aldrich; 20,000da) was diluted to a concentration of
+0.775g/100.5ml in 97.5ml of distilled water, 2ml 1M NaOH, and 0.5ml 1M
+HCL, to aid in dissolving the casein. The pH of the solution was 9. Both
+keratin and casein solutions were added at 1ml in four separate vials. A
+sample was taken immediately before and after the first feeding. Nine
+more samples were taken at 3h, 6h, 24h, 48h, 54h, 72h, 96h, 168h, and
+192h after feeding.
+
+The concentration of keratin in each vial was 483.87mg/l, resulting in
+76.9mg/l of nitrogen, and 24.19mg/l of sulfur. The concentration of
+casein in each vial was 248.75mg/l, resulting in 33.33mg/l of nitrogen,
+and 1.94mg/l of sulfur.
+
+### Analysis
+
+To measure pH, 10ml of each sample was taken into a separate vial, after
+which the sampling vial was sacrificed. The Mettler Toledo FEP20-TRISS
+Kit FiveEasy Plus pH Meter was used to measure pH, accurate to two
+decimal places.
+
+To collect samples for VFA analysis, two 2ml Eppendorf tubes were filled
+with sludge and centrifuged at 10,000rpm for two minutes. The
+supernatant was pipetted off and 1ml was passed through a 0.2µm filter
+into a 2ml GC-FID vial with 0.1um of orthophosphoric acid and stored at
+2-8°C to stabilise the liquid.
+
+VFAs were detected using a Gas Chromatograph (GC) with Flame Ionization
+Detection (FID) (HP 5890 series II) fitted with a Nukol capillary column
+(30m × 0.25 mm, df 0.25; 24107, Sigma). Helium carrier gas flowed
+through at 5ml/min. Detectors and injectors were set at 200°C. 1ml of
+each sample was heated in a sequence: 100 to 150°C at a rate of
+10°C/min, then 150 to 200°C at 20°C/min and held at 200°C for 10
+minutes. The GC-FID was calibrated using a Volatile Free Acid Mix
+(CRM46975, Sigma-Aldrich, Dorset, UK) providing C~2~-C~6~ reference
+values from 0.1 to 10 mM. The calibration results showed a satisfactory
+correlation (R2\>98%).
+
+### Model development
+
+Raw data from the GC-FID was imported into Microsoft Excel (Microsoft
+Corporation, 2018) for data modelling, found in @suppfile-model. A
+first-order kinetic model, known as an iterative inverse model, was used
+to calculate the degradation rate of different VFAs under anaerobic
+digestion. Only hexanoate and butyrate were modelled alongside acetate
+in the study due to being the easiest to model for all three treatments.
+To find the degradation rate, the general equation used was: $$
+[X]_{t+1} = X_{k}  \cdot [X]_{t}
+$$
+
+where $X_{t}$ is the concentration of $X$ (mM) at time $t$ (hours),
+while $X_{k}$ is the first-order degradation rate of $X$. This equation
+changes when considering hexanoate additions from octanoate (O).
+Calculating the k-value of butyrate and acetate becomes more complex,
+due to the addition of butyrate from hexanoate metabolism, and addition
+of acetate from hexanoate, butyrate, and octanoate metabolism. The
+equations, for each VFA, are as follows:
+
+For hexanoate (H): $$
+[H]_{t+1} = H_{k} \cdot[H]_{t} + O
+$$
+
+For butyrate (B): $$
+[B]_{t+1}
+= (B_{k} \cdot [B]_{t}) + ((1 - H_{k}) 
+\cdot {{[H]_{t+1} + [H]_{t}}\over{2}})
+$$
+
+For acetate (A): $$
+[A]_{t+1}
+= (A_{k} \cdot [A]_{t}) + ((1 - H_{k}) 
+\cdot {{[H]_{t+1} + [H]_{t}}\over{2}}) + ((1 - B_{k}) \cdot (B_{t+1}+B_{t}))
+$$
+
+From this, we can calculate methane (M) production per timepoint using:
+
+$$
+[M]_{t} = ((1 - A_{k}) \cdot [A]_{t})
+$$
+
+In this model, degradation rates were calculated from when VFAs started
+being produced, up until 96 hours after feeding, as the 92-hour gap
+after this timepoint is too long relative to the other timepoints to
+determine the degradation rate with accuracy. As we know there are no
+unknown VFAs adding to the hexanoate concentration for the
+hexanoate-treated sludge, we can use the k-value of hexanoate from the
+hexanoate-treated dataset for the keratin- and casein-treated datasets
+as it can be assumed they would be similar. The butyrate, acetate, and
+methane concentrations are then calculated in that order, minimizing
+discrepancy between model and GC-FID data to get a best-fit for each VFA
+per dataset.
+
+### Statistics
+
+All statistical significance tests and data visualisation were performed
+using R (version 4.3.3) (R Core Team, 2023) with tidyverse packages
+(Wickham et al., 2019). Statistical significance was assigned at P \<
+0.05. Unless otherwise stated, error bars shown in figures are standard
+error of mean.
+
+# Results
+
+### Analysis of pH and VFA accumulation
+
+```{r}
+#| label: ph-data-import
+#| include: false
+# Imports pH data for keratin and casein
+protein_ph <- read_csv("data/raw/protein_pH.csv") |> janitor::clean_names()
+```
+
+```{r}
+#| label: ph-split-data
+#| include: false
+# Splits sample_replicate column into "treatment" and "replicate"
+protein_ph <- protein_ph |> 
+  separate(col = sample_replicate, 
+           into = c("treatment", "replicate"), 
+           sep = "-",
+           remove = FALSE)
+```
+
+```{r}
+#| label: ph-pivot-long-format
+#| include: false
+# Pivot the pH data to long format
+protein_ph <- protein_ph %>%
+  pivot_longer(cols = -c(sample_replicate,
+                         treatment, 
+                         replicate,
+                         time_hours),
+               values_to = "pH",
+               names_to = "Variable")
+```
+
+```{r}
+#| label: ph-data-summary
+#| include: false
+# Summarise and calculate mean and se of pH
+protein_ph_summary <- protein_ph |> 
+  group_by(treatment, time_hours) |> 
+  summarise(mean_pH = mean(pH),
+            se_pH = sd(pH)/sqrt(length(pH))) |> 
+  ungroup()
+```
+
+```{r}
+#| label: ph-anova
+#| include: false
+# Two-way repeated-measures ANOVA on pH trend over time between treatments
+ph_aov <- aov(pH ~ treatment * replicate + Error(time_hours / replicate),
+             data = protein_ph)
+
+summary(ph_aov)
+```
+
+```{r}
+#| label: ph-t-tests
+# Casein and keratin at t=0:
+pHc0 <- c(7.7, 7.71, 7.64, 7.67)
+pHk0 <- c(7.57, 7.72, 7.41, 7.56)
+pHck0 <- t.test(pHc0, pHk0)
+pHck0 <- round(pHck0$p.value, 4)
+## p=0.166 (not significant)
+
+# Casein and keratin at t=6:
+pHc6 <- c(7.71, 7.74, 7.75, 7.69)
+pHk6 <- c(7.64, 7.82, 7.73, 7.7)
+pHck6 <- t.test(pHc6, pHk6)
+pHck6 <- round(pHck6$p.value, 4)
+## p=1 (not significant)
+
+# Casein and keratin at t=24:
+pHc24 <- c(7.92, 7.93, 7.94, 7.89)
+pHk24 <- c(8.12, 7.99, 7.77, 7.92)
+pHck24 <- t.test(pHc24, pHk24)
+pHck24 <- round(pHck24$p.value, 4)
+## p=0.7102 (not significant)
+
+# Casein and keratin at t=48:
+pHc48 <- c(8.02, 7.93, 7.96, 7.94)
+pHk48 <- c(8.02, 7.93, 8.02, 7.88)
+pHck48 <- t.test(pHc48, pHk48)
+pHck48 <- round(pHck48$p.value, 4)
+## p=1 (not significant)
+
+# Casein and keratin at t=54:
+pHc54 <- c(7.96, 7.91, 7.9, 7.93)
+pHk54 <- c(7.86, 7.87, 7.8, 7.82)
+pHck54 <- t.test(pHc54, pHk54)
+pHck54 <- round(pHck54$p.value, 4)
+## p=0.0068 (significant)
+
+# Casein and keratin at t=72:
+pHc72 <- c(7.87, 7.89, 7.89, 7.9)
+pHk72 <- c(7.8, 7.81, 7.82, 7.8)
+pHck72 <- t.test(pHc72, pHk72)
+pHck72 <- round(pHck72$p.value, 4)
+## p<0.001 (significant)
+
+# Casein and keratin at t=96:
+pHc96 <- c(7.96, 8.01, 7.98, 8.01)
+pHk96 <- c(8.02, 7.97, 8.04, 8.12)
+pHck96 <- t.test(pHc96, pHk96)
+pHck96 <- round(pHck96$p.value, 4)
+## p=0.231 (not significant)
+
+# Casein and keratin at t=168:
+pHc168 <- c(7.92, 7.9, 7.93, 7,93)
+pHk168 <- c(7.87, 7.98, 8.03, 7.96)
+pHck168 <- t.test(pHc168, pHk168)
+pHck168 <- round(pHck168$p.value, 4)
+## p=0.3808 (not significant)
+
+# Casein and keratin at t=192:
+pHc192 <- c(7.9, 7.97, 7.98, 8)
+pHk192 <- c(7.88, 7.69, 7.78, 7.85)
+pHck192 <- t.test(pHc192, pHk192)
+pHck192 <- round(pHck192$p.value, 4)
+## p=0.0223 (significant)
+```
+
+```{r}
+#| label: hex-ph-data-import
+#| include: false
+# Import pH data for the hexanoate treatment
+hex_ph <- read_csv("data/raw/hex_pH.csv") |> janitor::clean_names()
+```
+
+```{r}
+#| label: hex-ph-data-split
+#| include: false
+# Splits sample_replicate column into "treatment" and "replicate"
+hex_ph <- hex_ph |> 
+  separate(col = sample_replicate, 
+           into = c("treatment", "replicate"), 
+           sep = "-",
+           remove = FALSE)
+```
+
+```{r}
+#| label: hex-ph-pivot-data-long
+#| include: false
+# Pivot the hexanaote pH data to long format
+hex_ph <- hex_ph %>%
+  pivot_longer(cols = -c(sample_replicate,
+                         treatment, 
+                         replicate,
+                         time_hours),
+               values_to = "pH",
+               names_to = "Variable")
+```
+
+```{r}
+#| label: hex-ph-data-sumamry
+#| include: false
+# Summarise and calcualte pH mean and se
+hex_ph_summary <- hex_ph |> 
+  group_by(treatment, time_hours) |> 
+  summarise(mean_pH = mean(pH),
+            se_pH = sd(pH)/sqrt(length(pH))) |> 
+  ungroup()
+```
+
+The two-way repeated-measures ANOVA of the mean pH trend over time for
+casein and keratin treatments in @fig-ph-comp revealed a lack of
+significant divergence in pH trends between the two treatments
+(F\[1,64\] = 1.801, P = 0.184). Despite this, two-sample t-tests
+revealed that the keratin treatment drops significantly lower than the
+casein treatment at 54 and 72 hours (P = `r pHck54`, P \< `r pHck72`,
+respectively). Keratin was also significantly lower at 192 hours (P =
+`r pHck192`). However, both treatments never went below a pH of 7.5,
+unlike the hexanoate treatment (@fig-ph-hex), which went from a mean pH
+of 7.9 immediately before the second feeding to 7.03 immediately after.
+
+::: {#fig-ph-comp}
+```{r}
+#| label: fig-ph-comp
+# Graph trend in pH over time for both keratin and casein
+protein_ph_summary |> 
+  ggplot(aes(x = time_hours, colour = treatment)) +
+           geom_line(aes(y = mean_pH), 
+                     linewidth = 1) +
+           geom_errorbar(aes(ymin = mean_pH - se_pH,
+                             ymax = mean_pH + se_pH),
+                         width = 3, 
+                         show.legend = F,
+                         linewidth = 0.5) +
+           scale_color_manual(values = c("blue", "orange")) +
+           scale_x_continuous(name = "Time (hours)") +
+           scale_y_continuous(name = "Mean pH") +
+           theme_bw() +
+           theme(strip.background = element_blank())
+ggsave("images/protein_ph.png")
+```
+
+**Comparison between casein and keratin pH**. The mean pH over time
+(hours) for casein and keratin treatments was determined (n = 4).
+Two-way repeated-measures ANOVA found no significant difference in pH
+trend between treatments (F\[1,64\] = 1.801, P = 0.184). Two-sample
+t-tests only revealed significance at 54 hours (P = `r pHck54`), 72
+hours (P = `r pHck72`), and 192 hours (P = `r pHck192`).
+:::
+
+::: {#fig-ph-hex}
+```{r}
+#| label: fig-ph-hex
+# Graph trend in pH over time for hexanoate treatment
+hex_ph_summary |> 
+  ggplot(aes(x = time_hours)) +
+  geom_line(aes(y = mean_pH), 
+            linewidth = 1) +
+  geom_errorbar(aes(ymin = mean_pH - se_pH,
+                    ymax = mean_pH + se_pH),
+                width = 2, 
+                show.legend = F,
+                linewidth = 0.5) +
+  scale_x_continuous(name = "Time (hours)") +
+  scale_y_continuous(name = "Mean pH") +
+  theme_bw() +
+  theme(strip.background = element_blank())
+ggsave("images/hex_ph.png")
+```
+
+**Trend in hexanoate pH over time**. Mean pH over time (hours) for
+hexanoate treatment (n=3), with feeding at 0 and 48 hours.
+:::
+
+```{r}
+#| label: full-vfa-data-import
+#| include: false
+# Import the full vfa data for casein and keratin
+full_vfa_cummul <- read_csv("data/raw/vfa.csv") |> janitor::clean_names()
+```
+
+```{r}
+#| label: full-vfa-data-split
+#| include: false
+# Splits sample_replicate column into "treatment" and "replicate"
+full_vfa_cummul <- full_vfa_cummul |> 
+  separate(col = sample_replicate, 
+           into = c("treatment", "replicate"), 
+           sep = "-",
+           remove = FALSE)
+```
+
+```{r}
+#| label: molecular-weight-data-import
+#| include: false
+# Import vfa molecular weight
+mol_wt <- read_table("data/raw/mol_wt.txt") |>
+  mutate(vfa = tolower(vfa))
+```
+
+```{r}
+#| label: full-vfa-pivot-long
+#| include: false
+# Pivot vfa data to long format
+full_vfa_cummul_piv <- full_vfa_cummul |> 
+  pivot_longer(cols = -c(sample_replicate,
+                         treatment, 
+                         replicate,
+                         time_hours),
+               values_to = "conc_mM",
+               names_to = "vfa") 
+```
+
+```{r}
+#| label: merge-mol-wt-full-vfa
+#| include: false
+# Join molecular weight to vfa data and calculate g/l
+full_vfa_cummul_piv <- full_vfa_cummul_piv |> 
+  left_join(mol_wt, by = "vfa") |>
+  mutate(conc_g_l = conc_mM * 0.001 * mw)
+```
+
+```{r}
+#| label: full-vfa-summary
+#| include: false
+# Summarise and calculate mean concentration and standard deviation for each VFA
+full_vfa_cummul_summary <- full_vfa_cummul_piv |> 
+  group_by(treatment, time_hours, vfa) |> 
+  summarise(mean_g_l = mean(conc_g_l),
+            se_g_l = sd(conc_g_l)/sqrt(length(conc_g_l)),
+            mean_mM = mean(conc_mM),
+            se_mM = sd(conc_mM)/sqrt(length(conc_mM))) |> 
+  ungroup()
+```
+
+```{r}
+#| label: total-vfa-summary
+#| include: false
+# Group all VFAs together and calculate total concentration and standard deviation
+total_full_vfa_summary <- full_vfa_cummul_summary %>%
+  group_by(treatment, time_hours) %>%
+  summarise(total_g_l = sum(mean_g_l),
+            tot_se_g_l = sd(mean_g_l) / sqrt(n())) %>%
+  ungroup()
+```
+
+The mean total VFA concentration (g/l) over time for casein and keratin
+(@fig-total-full-vfa) reveals that the VFA concentration in keratin is
+always increasing after 48 hours, with its rate in production slowing
+down after 96 hours. Whereas casein initially increases in concentration
+after 24 hours but then decreases until 96 hours, where we see it
+increase again to 168 hours before reducing at 192 hours. To investigate
+this further, we looked at the mean concentration (g/l) for each VFA
+over time (@fig-combined-full-vfa). The main finding is the large
+increase in isopentanoate, pentanoate, and propanoate concentrations in
+the keratin treatment from 72 hours, whereas they are consistently low
+in the casein treatment.
+
+::: {#fig-total-full-vfa}
+```{r}
+#| label: fig-total-full-vfa
+# Graph total VFA over time for casein and keratin treatments
+total_full_vfa_summary |> 
+  ggplot(aes(x = time_hours, colour = treatment)) +
+  geom_line(aes(y = total_g_l), 
+            linewidth = 0.6) +
+  geom_errorbar(aes(ymin = total_g_l - tot_se_g_l,
+                    ymax = total_g_l + tot_se_g_l),
+                width = 2, 
+                show.legend = F,
+                linewidth = 0.2) +
+  scale_color_manual(values = c("blue", "orange")) +
+  scale_x_continuous(name = "Time (hours)") +
+  scale_y_continuous(name = "Total Mean VFA concentration (g/l)") +
+  theme_bw() +
+  theme(strip.background = element_blank())
+ggsave("images/total_vfa.png")
+```
+
+**Trend in total VFA concentration for casein and keratin**. Shows the
+trend in mean total vfa concentration (g/l) over time (hours) for both
+casein and keratin treatments (n=4).
+:::
+
+::: {#fig-combined-full-vfa}
+```{r}
+#| label: fig-combined-full-vfa
+# Graph the cumulative data, grams per litre
+full_vfa_cummul_summary |> 
+  ggplot(aes(x = time_hours, colour = treatment)) +
+  geom_line(aes(y = mean_g_l), 
+            linewidth = 0.6) +
+  geom_errorbar(aes(ymin = mean_g_l - se_g_l,
+                    ymax = mean_g_l + se_g_l),
+                width = 6, 
+                show.legend = F,
+                linewidth = 0.2) +
+  scale_color_manual(values = c("blue", "orange")) +
+  scale_x_continuous(name = "Time (hours)") +
+  scale_y_continuous(name = "Mean VFA concentration (g/l)") +
+  theme_bw() +
+  facet_wrap(~vfa, nrow = 2) +
+  theme(strip.background = element_blank())
+ggsave("images/Full_VFA_Dataset.png")
+```
+
+**Trend in concentration of each VFA for keratin and casein**. Shows the
+mean concentration (g/l) of each VFA over time (hours) for casein and
+keratin (n=4).
+:::
+
+```{r}
+#| label: k-value-data-import
+#| include: false
+# Import k-values for each VFA per treatment
+k_values <- read_csv("data/raw/k_values.csv") |> janitor::clean_names()
+```
+
+```{r}
+#| label: k-value-split-data
+#| include: false
+# Split sample_replicate into separate columns
+k_values <- k_values |> 
+  separate(col = sample_replicate, 
+           into = c("treatment", "replicate"), 
+           sep = "-",
+           remove = FALSE)
+```
+
+```{r}
+#| label: group-k-values
+#| include: false
+# Groups the k-values by the treatment used
+k_values <- k_values |> 
+  group_by(treatment)  |> 
+  arrange(treatment, vfa)
+```
+
+```{r}
+#| label: k-value-summary
+#| include: false
+# Summarise k-values and calculate mean and standard deviation
+mk_values <- k_values |> 
+  group_by(treatment, vfa) |> 
+  summarise(mean_k = mean(k_value),
+            se_k = sd(k_value)/sqrt(length(k_value))) |> 
+  ungroup()
+```
+
+```{r}
+#| label: k-value-t-test
+# Do a t-test for between each treatment for acetate and butyrate
+ace_cas <- c(0.62, 0.61, 0.62, 0.56)
+ace_ker <- c(0.69, 0.7, 0.68, 0.69)
+ace_hex <- c(0.3, 0.4, 0.38)
+
+ace_ker_cas <- t.test(ace_cas, ace_ker)
+akc <- round(ace_ker_cas$p.value, 4)
+# p = 0.0065 (significant)
+
+ace_ker_hex <- t.test(ace_hex, ace_ker)
+akh <- round(ace_ker_hex$p.value, 4)
+# p = 0.0076 (significant)
+
+ace_hex_cas <- t.test(ace_hex, ace_cas)
+ahc <- round(ace_hex_cas$p.value, 4)
+# p = 0.0063 (significant)
+
+but_cas <- c(0.8, 0.81, 0.79)
+but_hex <- c(0, 0, 0)
+but_ker <- c(0, 0, 0)
+
+but_ker_cas <- t.test(but_cas, but_ker)
+bkc <- round(but_ker_cas$p.value, 4)
+# p<0.0001 (significant)
+
+but_hex_cas <- t.test(but_cas, but_hex)
+bhc <- round(but_ker_cas$p.value, 4)
+# p<0.0001 (significant)
+
+but_ker_hex <- t.test(but_ker, but_hex)
+bkh <- round(but_ker_cas$p.value, 4)
+# p=1 (not significant)
+```
+
+### Modelling VFA degradation
+
+To estimate the VFA degradation rates of hexanoate, butyrate, and
+acetate, iterative inverse modelling was performed. The model gave us a
+mean k-value of 0.83 for hexanoate, a mean k-value of 0 for butyrate,
+and a k-value of 0.37 for acetate. For casein, mean k-values of 0.8 and
+0.61 were obtained for butyrate and acetate, respectively, whereas for
+keratin, mean k-values of 0 and 0.69 were obtained for butyrate and
+acetate, respectively (@fig-k-values). Two-way t-tests revealed that the
+k-value for acetate was significantly lower for the hexanoate treatment
+than casein (P = `r ahc`) and keratin (P = `r akh`). It also showed that
+acetate’s k-value for casein was significantly lower than for keratin (P
+= `r akc`). The k-value of butyrate was also significantly higher for
+casein than it was for hexanoate (P \< `r bhc`) and keratin (P \<
+`r bkc`).
+
+::: [#fig-k-values]
+```{r}
+#| label: fig-k-values
+# Create a bar chat of the mean k-values, showing significance
+mk_values |> 
+  ggplot(aes(x = vfa, fill = treatment)) +
+  geom_bar(aes(y = mean_k), 
+           position = position_dodge(width = 0.9),
+           width = 0.6,
+           stat = "identity") +
+  geom_errorbar(aes(ymin = mean_k - se_k,
+                    ymax = mean_k + se_k, 
+                    x = vfa),
+                position = position_dodge(width = 0.9),
+                width = 0.1, 
+                show.legend = FALSE,
+                linewidth = 0.2) +
+  annotate("text", x = 1.15, y = 0.74, label = "**", size = 4) +
+  annotate("segment", x = 1, xend = 1.3, y = 0.73, yend = 0.73, size = 0.5) + 
+  annotate("text", x = 0.85, y = 0.66, label = "**", size = 4) +
+  annotate("segment", x = 0.7, xend = 1, y = 0.65, yend = 0.65, size = 0.5) +
+  annotate("text", x = 1, y = 0.81, label = "**", size = 4) +
+  annotate("segment", x = 0.7, xend = 1.3, y = 0.8, yend = 0.8, size = 0.5) +
+  annotate("text", x = 1.85, y = 0.85, label = "***", size = 4) +
+  annotate("segment", x = 1.7, xend = 2, y = 0.84, yend = 0.84, size = 0.5) +
+  annotate("text", x = 2, y = 0.91, label = "***", size = 4) +
+  annotate("segment", x = 1.7, xend = 2.3, y = 0.9, yend = 0.9, size = 0.5) +
+  scale_fill_manual(values = c("blue", "orange", "forestgreen")) +
+  scale_x_discrete(name = "VFA") +
+  scale_y_continuous(name = "K-value", limits = c(0, 0.91)) +
+  theme_bw() +
+  theme(strip.background = element_blank())
+ggsave("images/k_values.png")
+```
+
+**Significant difference in VFA k-values between treatments**. Mean
+k-value of acetate, butyrate, and hexanoate for each treatment (n = 4,
+4, 3 for casein, keratin, and hexanoate, respectively). Statistical
+analysis by paired sample t-test, \*P \< 0.05, \*\*P \< 0.01, \*\*\*P \<
+0.005.
+:::
+
+```{r}
+#| label: import-sum-methane-data
+#| include: false
+# Import methane concentration at each timepoint per hour 
+meth_sum <- read_csv("data/raw/sum_meth.csv") |> janitor::clean_names()
+```
+
+```{r}
+#| label: group-delta-methane-treatment
+#| include: false
+# Group the sum methane values by treatment
+meth_sum_delta <- meth_sum |> 
+  group_by(treatment)  |> 
+  arrange(treatment, time_hours) |>
+  mutate(methane = methane - lag(methane),
+         delta_time = time_hours - lag(time_hours))
+```
+
+```{r}
+#| label: pivot-long-delta-methane
+#| include: false
+# Pivot the delta methane data to long format
+meth_sum_delta <- meth_sum_delta |> 
+  pivot_longer(cols = -c(treatment,
+                         time_hours,
+                         delta_time),
+               values_to = "conc_mM",
+               names_to = "methane") 
+```
+
+```{r}
+#| label: convert-delta-methane-g-l
+#| include: false
+# Calculate delta g/l using the molecular weight of methane (16.04)
+meth_sum_delta <- meth_sum_delta |> 
+  mutate(conc_g_l = conc_mM * 0.001 * 16.04)
+```
+
+```{r}
+#| label: summarise-delta-methane
+#| include: false
+# Summarise and calculate mean and se for delta methane dataset
+meth_sum_delta_summary <- meth_sum_delta |> 
+  group_by(treatment, time_hours, methane) |> 
+  summarise(mean_g_l = mean(conc_g_l),
+            mean_mM = mean(conc_mM)) |> 
+  ungroup()
+```
+
+It can be assumed that the rate of methane production is equal to the
+rate of acetate degradation. Therefore, the first-order production rate
+of methane for the hexanoate, keratin, and casein treatments are 0.37,
+0.61, and 0.69, respectively. @fig-methane-rate compares the rate of
+methane production for casein and keratin. The graph shows that the rate
+of methane production for casein is initially high, at \~0.04g/l/hr, but
+decreases over time, reaching close to 0.005g/l/hr at 96 hours. Whereas
+keratin starts low at roughly 0.01g/l/hr, but increases to
+\~0.035g/l/hr. Despite these contrasting rates of methane production,
+both treatments end up producing roughly the same total methane, at
+0.95g/l for keratin, and 0.93g/l for casein.
+
+::: {#fig-methane-rate}
+```{r}
+#| label: fig-methane-rate
+# Create graph of change in methane concentration (g/l) over time (hours)
+meth_sum_delta_summary |> 
+  ggplot(aes(x = time_hours, colour = treatment)) +
+  geom_line(aes(y = mean_g_l), 
+            linewidth = 0.9) +
+  scale_color_manual(values = c("blue", "orange")) +
+  scale_x_continuous(name = "Time (hours)") +
+  scale_y_continuous(name = "Mean Change in Methane Concentration (g/l)") +
+  theme_bw() +
+  facet_wrap(~methane) +
+  theme(strip.background = element_blank())
+ggsave("images/rate_methane.png")
+```
+
+**Rate of methane production over time** Shows the mean change in
+methane concentration (g/l) over time (hours) for casein and keratin
+treatments.
+:::
+
+```{r}
+#| label: import-comp-data
+#| include: false
+# Import hexanoate, casein, and keratin data of model VFA concentration and GC-FID concentration
+Hex_comp <- read_csv("data/raw/hex_comp.csv") |> janitor::clean_names()
+casein_comp <- read_csv("data/raw/casein_comp.csv") |> janitor::clean_names()
+Keratin_comp <- read_csv("data/raw/keratin_comp.csv") |> janitor::clean_names()
+```
+
+```{r}
+#| label: pivot-comp-long
+#| include: false
+# Pivot hex_comp to long format
+Hex_comp <- Hex_comp |> 
+  pivot_longer(cols = -c(treatment,
+                         time_hours),
+               values_to = "conc_mM",
+               names_to = "vfa") 
+
+casein_comp <- casein_comp |> 
+  pivot_longer(cols = -c(treatment,
+                         time_hours),
+               values_to = "conc_mM",
+               names_to = "vfa")
+
+Keratin_comp <- Keratin_comp |> 
+  pivot_longer(cols = -c(treatment,
+                         time_hours),
+               values_to = "conc_mM",
+               names_to = "vfa") 
+```
+
+```{r}
+#| label: comp-vfa-g-l
+#| include: false
+# Assign vfa molecule weight to each vfa, and convert to g/l
+Hex_comp <- Hex_comp |> 
+  left_join(mol_wt, by = "vfa") |>
+  mutate(conc_g_l = conc_mM * 0.001 * mw)
+
+casein_comp <- casein_comp |> 
+  left_join(mol_wt, by = "vfa") |>
+  mutate(conc_g_l = conc_mM * 0.001 * mw)
+
+Keratin_comp <- Keratin_comp |> 
+  left_join(mol_wt, by = "vfa") |>
+  mutate(conc_g_l = conc_mM * 0.001 * mw)
+```
+
+```{r}
+#| label: comp-summarise
+#| include: false
+# Summarise and calculate mean and se for each VFA
+Hex_comp_summary <- Hex_comp |> 
+  group_by(treatment, time_hours, vfa) |> 
+  summarise(mean_g_l = mean(conc_g_l),
+            se_g_l = sd(conc_g_l)/sqrt(length(conc_g_l)),
+            mean_mM = mean(conc_mM),
+            se_mM = sd(conc_mM)/sqrt(length(conc_mM))) |> 
+  ungroup()
+
+casein_comp_summary <- casein_comp |> 
+  group_by(treatment, time_hours, vfa) |> 
+  summarise(mean_g_l = mean(conc_g_l),
+            se_g_l = sd(conc_g_l)/sqrt(length(conc_g_l)),
+            mean_mM = mean(conc_mM),
+            se_mM = sd(conc_mM)/sqrt(length(conc_mM))) |> 
+  ungroup()
+
+Keratin_comp_summary <- Keratin_comp |> 
+  group_by(treatment, time_hours, vfa) |> 
+  summarise(mean_g_l = mean(conc_g_l),
+            se_g_l = sd(conc_g_l)/sqrt(length(conc_g_l)),
+            mean_mM = mean(conc_mM),
+            se_mM = sd(conc_mM)/sqrt(length(conc_mM))) |> 
+  ungroup()
+```
+
+```{r}
+#| label: hex-comp-t-tests
+# Do a one-sample t-test to test significance between model and actual concentration for each vfa at each timepoint
+
+Hex_3h_acetate <- c(2.1, 2.4, 2.7)
+hex3ace <- t.test(x = Hex_3h_acetate, mu = 2.21599917)
+h3a <- round(hex3ace$p.value, 4)
+# p-value = 0.3994
+
+Hex_6h_acetate <- c(1.2, 1.5, 1.3)
+hex6ace <- t.test(x = Hex_6h_acetate, mu = 1.42546852)
+h6a <- round(hex6ace$p.value, 4)
+# p-value = 0.4058
+
+Hex_24h_acetate <- c(0.2, 0.6, 0.1)
+hex24ace <- t.test(x = Hex_24h_acetate, mu = 0.05035337)
+h24a <- round(hex24ace$p.value, 4)
+# p-value = 0.2438
+
+Hex_30h_acetate <- c(0.1, 0.05, 0)
+hex30ace <- t.test(x = Hex_30h_acetate, mu = 0.01646255)
+h30a <- round(hex30ace$p.value, 4)
+# p-value = 0.3652
+
+Hex_3h_butyrate <- c(0.1, 0.05, 0)
+hex3but <- t.test(x = Hex_3h_butyrate, mu = 0.43577747)
+h3b <- round(hex3but$p.value, 4)
+# p-value = 0.0056
+
+Hex_6h_butyrate <- c(0.1, 0.05, 0)
+hex6but <- t.test(x = Hex_6h_butyrate, mu = 0.24917189)
+h6b <- round(hex6but$p.value, 4)
+# p-value = 0.0204
+
+Hex_24h_butyrate <- c(0.1, 0.05, 0)
+hex24but <- t.test(x = Hex_24h_butyrate, mu = 0.00870773)
+h24b <- round(hex24but$p.value, 4)
+# p-value = 0.2889
+
+Hex_30h_butyrate <- c(0.1, 0.05, 0)
+hex30but <- t.test(x = Hex_30h_butyrate, mu = 0.00284691)
+h30b <- round(hex30but$p.value, 4)
+# p-value = 0.244
+
+Hex_3h_hexanoate <- c(3.6, 3.2, 3.5)
+hex3hex <- t.test(x = Hex_3h_hexanoate, mu = 2.32526713)
+h3h <- round(hex3hex$p.value, 4)
+# p-value = 0.0116
+
+Hex_6h_hexanoate <- c(1.3, 1.1, 1.6)
+hex6hex <- t.test(x = Hex_6h_hexanoate, mu = 1.32955752)
+h6h <- round(hex6hex$p.value, 4)
+# p-value = 0.9816
+
+Hex_24h_hexanoate <- c(0, 0.05, 0.1)
+hex24hex <- t.test(x = Hex_24h_hexanoate, mu = 0.04646359)
+h24h <- round(hex24hex$p.value, 4)
+# p-value = 0.9137
+
+Hex_30h_hexanoate <- c(0, 0.05, 0.1)
+hex30hex <- t.test(x = Hex_30h_hexanoate, mu = 0.01519082)
+h30h <- round(hex30hex$p.value, 4)
+# p-value = 0.3512
+```
+
+```{r}
+#| label: casein-comp-t-tests
+# Do a one-sample t-test to test significance between model and actual concentration for each vfa at each timepoint
+
+casein_54h_acetate <- c(6.4, 6.2, 6.6, 5.8)
+cas54ace <- t.test(x = casein_54h_acetate, mu = 6.365807784)
+c54a <- round(cas54ace$p.value, 4)
+# p-value = 0.5463
+
+casein_72h_acetate <- c(7.5, 7.9, 8.1, 7.3)
+cas72ace <- t.test(x = casein_72h_acetate, mu = 6.365807784)
+c72a <- round(cas72ace$p.value, 4)
+# p-value = 0.0053
+
+casein_96h_acetate <- c(9, 9.7, 10.1, 8.9)
+cas96ace <- t.test(x = casein_96h_acetate, mu = 0.708291544)
+c96a <- round(cas96ace$p.value, 4)
+# p-value < 0.0001
+
+casein_54h_butyrate <- c(3.5, 3.2, 3.8, 3.4)
+cas54but <- t.test(x = casein_54h_butyrate, mu = 3.521941857)
+c54b <- round(cas54but$p.value, 4)
+# p = 0.7322
+
+casein_72h_butyrate <- c(2.1, 1.6, 1.9, 2)
+cas72but <- t.test(x = casein_72h_butyrate, mu = 1.582747234)
+c72b <- round(cas72but$p.value, 4)
+# p = 0.0606
+
+casein_96h_butyrate <- c(0.1, 0.3, 0.2, 0.1)
+cas96but <- t.test(x = casein_96h_butyrate, mu = 0.353034854)
+c96b <- round(cas96but$p.value, 4)
+# p = 0.0338
+```
+
+```{r}
+#| label: keratin-comp-t-tests
+# Do a one-sample t-test to test significance between model and actual concentration for each vfa at each timepoint
+
+keratin_72h_acetate <- c(5, 5.6, 4.7, 5.2)
+ker72ace <- t.test(x = keratin_72h_acetate, mu = 3.090446445)
+k72a <- round(ker72ace$p.value, 4)
+# p-value = 0.0017
+
+keratin_96h_acetate <- c(7.1, 7.3, 6.9, 7)
+ker96ace <- t.test(x = keratin_96h_acetate, mu = 7.150370407)
+k96a <- round(ker96ace$p.value, 4)
+# p-value = 0.4424
+
+keratin_72h_butyrate <- c(3, 4.2, 4, 2)
+ker72but <- t.test(x = keratin_72h_butyrate, mu = 0.242660886)
+k72b <- round(ker72but$p.value, 4)
+# p-value = 0.0091
+
+keratin_96h_butyrate <- c(0.2, 0.4, 0.3, 0.1)
+ker96but <- t.test(x = keratin_96h_butyrate, mu = 0.556011526)
+k96b <- round(ker96but$p.value, 4)
+# p-value = 0.017
+```
+
+To measure the accuracy of the model, the GC-FID data was compared to
+model data to test for significant differences using one-way t-tests.
+The hexanoate model appears to fit well with most of the GC-FID data,
+with only a few significant discrepancies (@fig-hex-comp). The model
+made the butyrate concentration too high at 3 hours (P = `r h3b`) and 6
+hours (P = `r h6b`) after feeding. It also modelled the hexanoate
+concentration too low at 3 hours (P = `h3h`) after feeding.
+
+::: {#fig-hex-comp}
+```{r}
+#| label: fig-hex-comp
+# Create a graph for each VFA comparing the model to the GC-FID for hexanoate treatment
+ggplot(data = Hex_comp_summary, aes(x = time_hours, colour = treatment)) +
+  geom_point(aes(y = mean_g_l), size = 1.2, alpha = 0.7) +
+  geom_errorbar(data = Hex_comp_summary, 
+                aes(ymin = mean_g_l - se_g_l, 
+                    ymax = mean_g_l + se_g_l), 
+                width = 0.6, colour = "blue",
+                linewidth = 0.2) +
+  scale_color_manual(values = c("orange", "forestgreen")) +
+  scale_x_continuous(name = "Time (hours)") +
+  scale_y_continuous(name = "Mean VFA Concentration (g/l)") +
+  theme_bw() +
+  facet_wrap(~ vfa, nrow = 2) +
+  theme(strip.background = element_blank(),
+        legend.position = "top")
+ggsave("images/hex_comp.png")
+```
+
+**Comparing model and GC-FID VFA data for hexanoate treatment**. Average
+acetate, butyate, and hexanoate concentrations (g/l) over time (hours)
+between the model and GC-FID data for the hexanoate-treated sludge
+(n=3). One-sample t-tests show significance at 3 hours for butyrate (P =
+`r h3b`), 6 hours (P = `r h6b`), and hexanoate at 3 hours (P = `h3h`).
+:::
+
+For casein and keratin, the model fits well with hexanoate due to the
+additions from octanoate allowing it to match the GC-FID data. However,
+casein’s model drastically underestimates the concentration of acetate
+at 72 hours (P = `r c72a`) and 96 hours (P \< `r c96a`) after feeding
+(@fig-casein-comp). The model also slightly overestimates butyrate at 96
+hours (P = `r c96b`). On the other hand, keratin’s model severely
+underestimates acetate’s concentration at 72 hours (P = `r k72a`)
+(@fig-keratin-comp). It also underestimates butyrate at 72 hours (P =
+`r k72b`) but slightly overestimates it at 96 hours (P = `r k96b`).
+
+::: {#fig-casein-comp}
+```{r}
+#| label: fig-casein-comp
+# Create a graph for each VFA comparing the model to the GC-FID for casein treatment
+ggplot(data = casein_comp_summary, aes(x = time_hours, colour = treatment)) +
+  geom_point(aes(y = mean_g_l), size = 1.2, alpha = 0.7) +
+  geom_errorbar(data = casein_comp_summary, 
+                aes(ymin = mean_g_l - se_g_l, 
+                    ymax = mean_g_l + se_g_l), 
+                width = 0.5, colour = "blue") +
+  scale_color_manual(values = c("orange", "forestgreen")) +
+  scale_x_continuous(name = "Time (hours)") +
+  scale_y_continuous(name = "Change in VFA Concentration (g/l)") +
+  theme_bw() +
+  facet_wrap(~ vfa, nrow = 2) +
+  theme(strip.background = element_blank(),
+        legend.position = "top")
+ggsave("images/Casein_Comp.png")
+```
+
+**Comparing model and GC-FID VFA data for casein treatment**. Average
+acetate, butyrate, and hexanoate concentrations (g/l) over time (hours)
+between the model and GC-FID data for casein-treated sludge (n = 4).
+Statistical analysis by one-sample t-test found significance between
+GC-FID and model data for each timepoint. Significant differences found
+for acetate at 72h (p = `r c72a`), 96h (p \< `r c96a`), and butyrate at
+96h (p = `r c96b`).
+:::
+
+::: {fig-keratin-comp}
+```{r}
+#| label: fig-keratin-comp
+# Create a graph for each VFA comparing the model to the GC-FID for casein treatment
+ggplot(data = Keratin_comp_summary, aes(x = time_hours, colour = treatment)) +
+  geom_point(aes(y = mean_g_l), size = 1.2, alpha = 0.7) +
+  geom_errorbar(data = Keratin_comp_summary, 
+                aes(ymin = mean_g_l - se_g_l, 
+                    ymax = mean_g_l + se_g_l), 
+                width = 0.6, colour = "blue",
+                linewidth = 0.2) +
+  scale_color_manual(values = c("orange", "forestgreen")) +
+  scale_x_continuous(name = "Time (hours)") +
+  scale_y_continuous(name = "Mean VFA Concentration (g/l)") +
+  theme_bw() +
+  facet_wrap(~ vfa, nrow = 2) +
+  theme(strip.background = element_blank(),
+        legend.position = "top")
+ggsave("images/keratin_comp.png")
+```
+
+**Comparing model and GC-FID VFA data for keratin treatment**. Average
+acetate, butyrate, and hexanoate concentrations (g/l) over time (hours)
+between the model and GC-FID data for keratin-treated sludge.
+Statistical analysis by one-sample t-test to find significance between
+GC-FID and model data for each timepoint. Significant differences found
+for acetate at 72h (p = `r k72a`), and butyrate at 72h (p = `r k72b`)
+and 96h (p = `r k96b`).
+:::
+
+# Discussion
+
+The lack of significance in the two-way repeated-measures ANOVA
+indicates that the two treatments cause similar effect on pH over time.
+However, this model assumes homogeneity of variance, whereas, in
+@fig-ph-comp, the standard deviation for casein is a lot smaller
+compared to keratin for most pH values. This may have reduced the power
+to detect true differences between groups. The two-sample t-tests
+revealed that keratin was significantly more acidic than casein at 54,
+72, and 192 hours. This correlates with the mean total VFA concentration
+of casein and keratin in Fig.3, where keratin is increasing in VFAs
+during these timepoints, whereas casein is decreasing. This accumulation
+of VFAs indicates an imbalance between VFA production and consumption
+rate (Babel et al., 2004; Siegert and Banks, 2005) which could be an
+indicator of system instability for keratin (Fischer et al., 1983).
+
+The accumulation of iso-pentanoate, as seen for the keratin treatment in
+@fig-combined-full-vfa, has been reported to be one of the best
+indicators for process instability, along with iso-butyrate accumulation
+(Hill and Holmberg, 1988). The keratin treatment reaches a peak
+accumulation of isopentanoate at just over 600mg/l, which is above the
+reported threshold level of 50mg/l to indicate system instability
+(Deublein and Steinhauser, 2008). Despite an absolute VFA level to
+indicate system instability is not entirely feasible due to there being
+many different types of AD systems, it can’t be denied that an
+accumulation of this magnitude is likely a problematic sign. Another
+study, by Hill and Bolte (1989), reported levels of isopentanoate above
+15mg/l indicated that failure has already occurred, where a long
+recovery period was necessary. It could be argued that the higher
+concentration of leucine, in the keratin treatment, at 40mg/l, compared
+to the casein treatment, at 23mg/L, played a role, due to being a
+precursor of iso-pentanoate (Firkins et al., 2015). However, the
+difference in amino acid is relatively small compared to the difference
+in iso-pentanoate accumulation.
+
+The nitrogen present in both protein treatments likely contributed to pH
+stability, with the pH never dropping below 7.5 for either treatment. In
+contrast, hexanoate, as shown in @fig-ph-hex, exhibited significant
+fluctuations. This difference is probably attributed to the buffering
+capacity of ammonia generated from the degradation of amino acids in
+both protein treatments, as noted in previous studies (Fricke et al.,
+2007; McCarty, 1964; Zhang et al., 2016).
+
+Both protein treatments have nitrogen concentrations too low to cause
+ammonia inhibition directly (Duan et al., 2012; Hejnfelt and Angelidaki,
+2009; Kotsyurbenko et al., 2004; McCarty, 1964), at 33.33mg/l and
+76.9mg/l for casein and keratin, respectively. However, is important to
+note that both treatments are slightly outside the optimal pH range of
+6.5 – 7.5 for methanogens (Liu et al., 2008; Zhang et al., 2015), which
+is likely due to the presence of ammonia, a weak base, in both systems.
+On the other hand, the hexanoate treatment stays relatively closer to
+the optimal pH range. However, if more sodium hexanoate were to be
+added, such as for industrial use, the likelihood of the pH going below
+the optimal range increases. Hence the comparison between @fig-ph-comp
+and @fig-ph-hex shows the importance of having ammonia as a buffer in
+the system.
+
+The iterative inverse model told us that the hexanoate treatment had the
+fastest acetate degradation, at k = 0.37, indicating that 63% of acetate
+in the system was consumed per hour (@fig-k-values). Since acetate
+degradation produces methane, it can be assumed that faster acetate
+degradation means a faster methane production rate. Casein having a
+faster acetate degradation (k = 0.61) than keratin (k = 0.69) was a
+surprise, since we expected the higher concentration of sulfur, at 24mg
+S/l to benefit the methanogens more than casein’s at 2mg S/l due to both
+being within the reported optimal range (Scherer and Sahm, 1981).
+However, it may be the case that the upper-boundary of this optimal
+range allows for a higher likelihood of AD inhibition with no additional
+benefit. It could also be the case that the type of AD system used in
+this study can tolerate less sulfur than the system used by Scherer and
+Sahm (1981). The significantly higher butyrate k-value for casein than
+hexanoate and keratin (p = `r bhc`, p = `r bkc`, respectively) is also
+surprising, considering butyrate is usually consumed a high rate
+relative to the other VFAs in the system (Wang et al., 1999).
+
+@fig-methane-rate tells us that methane production is overall decreasing
+for casein whereas it's increasing for keratin. This may be due to the
+degradation of casein starting before keratin, during the 24-hour gap
+between sampling at the 24- and 48-hour timepoints. This may be because
+the casein feedstock is more easily broken down than keratin, possibly
+due to the addition of HCl to the feedstock to help with dissolving the
+protein. It could also be that the hydrolysing bacteria in the casein AD
+system being more efficient than those in the keratin AD system.
+
+However, there is reason to be skeptical of the model data results, as
+iterative inverse modelling makes many assumptions when calculating the
+k-values of different VFAs. The model data fits well with the GC-FID
+data for the hexanoate treatment (@fig-hex-comp). This is because
+hexanoate is being added directly to the sample, so we know that there
+is no other material out there that is making hexanoate through
+metabolism, hence the modeled degradation rate of hexanoate can be
+reliable. This point can be extended for acetate and butyrate as well,
+as no other material other than the VFAs included in the model should be
+adding to them through metabolism. However, there is a slight but
+significant over-representation of the butyrate data at 3 and 6 hours (p
+= `r h3b`, p = `r h6b`, respectively). This likely comes from the
+assumption that the addition of new material from hexanoate at each hour
+is not being degraded whilst it’s being added. If this were the case,
+the model butyrate would likely match with the GC-FID data due to the
+k-value of the model butyrate data being 0. The significant discrepancy
+for hexanoate at 3 hours (p = `r h3b`) may be due to the assumption that
+the degradation rate is consistent throughout the process, whereas it is
+more realistic that the rate would fluctuate slightly.
+
+The main discrepancy in the model casein data (@fig-casein-comp) is the
+acetate being significantly underrepresented at 72 and 96 hours (p =
+`r c72a`, p = `r c96a`, respectively). This could be due to the
+assumption that no other material is adding to the acetate, other than
+butyrate, hexanoate, and octanoate. We see in @fig-combined-full-vfa
+that there is degradation of isobutyrate, isohexanoate, pentanoate,
+propanoate, and a small amount of isopentanoate between 48 and 54 hours
+for the keratin-treatment. This degradation should have contributed to
+the acetate concentration without affecting the hexanoate and butyrate
+concentrations, due to being odd-number or branched carbon chains. Hence
+the model butyrate fits well with the GC-FID data, with only a minor yet
+significant over-representation at 96 hours (p = `r k96b`).
+
+Whereas the keratin model significantly over-represents acetate and
+butyrate at 72 hours (p = `r k72a`, p = `r k72b`, respectively).
+@fig-combined-full-vfa does not help as much in this scenario, as there
+are no signs of major degradation specifically between 54 and 72 hours
+that would contribute this much to the concentration of butyrate. It
+could be argued that a large amount of hexanoate was produced and
+degraded between the 54- and 72-hour sampling point, meaning it wouldn’t
+appear in the results.
+
+To limit the number of assumptions made from using a first-order kinetic
+model, the continuous monitoring of every VFA, through using an online
+analysing machine, would provide us with a better understanding of the
+cause of certain VFA accumulations, as well as offer a degradation rate
+based off less assumptions. More research into the impact of high
+nitrogen and sulfur feedstocks independently and combined is needed to
+provide a better understanding of how nitrogen and sulfur affect the AD
+system when separate and when together, giving insight into their
+synergy.
+
+# Conclusion
+
+With signs of AD system instability based on the iso-pentanoate
+accumulation for the keratin treatment, it appears that the high sulfur
+and nitrogen synergistically create a more negative effect on the AD
+system than the high nitrogen and low sulfur casein treatment. The
+keratin treatment also had a lower k-value for acetate in keratin
+treatment, indicating a slower rate of methane production, however, due
+extensive list of assumptions made by the iterative inverse model, it
+cannot be confirmed that using reportedly beneficial amounts of nitrogen
+and sulfur results in a faster or slower methane production than lower
+amounts of sulfur. However, it can be confirmed that the addition of
+nitrogen to both systems appear to buffer pH at around 7.5 – 8, unlike
+the nitrogen-depleted AD system. Although, this may have slightly
+negatively impacted methanogenesis due to being more alkaline than the
+reported optimal pH range of 6.5 – 7.5 for methanogens.
+
+Word count: 3593
+
+# Supplementary
+
+### Files
+
+::: {#suppfile-model}
+[Model.xlsx](/data/processed/model.xlsx)
+:::
+
+# References
+
+Agrahari, S. and Wadhwa, N., 2010. Degradation of chicken feather a
+poultry waste product by keratinolytic bacteria isolated from dumping
+site at Ghazipur poultry processing plant. Int J Poult Sci, 9(5),
+pp.482-489
+
+Babel, S., Fukushi, K. and Incrassate, B., 2004. Effect of acid
+speciation on solid waste liquefaction in an anaerobic acid digester.
+Water Research, 38(9), pp.2417-2423
+
+Balch, W.E. and Wolfe, R.S., 1976. New approach to the cultivation of
+methanogenic bacteria: 2-mercaptoethanesulfonic acid (HS-CoM)-dependent
+growth of Methanobacterium ruminantium in a pressureized atmosphere.
+Applied and environmental microbiology, 32(6), pp.781-791.
+
+Balch, W.E. and Wolfe, R.S., 1979. Specificity and biological
+distribution of coenzyme M (2-mercaptoethanesulfonic acid). Journal of
+bacteriology, 137(1), pp.256-263.
+
+Block, R.J., Bolling, D., Brand, F.C. and Schein, A., 1939. The
+composition of keratins. The amino acid composition of hair, wool, horn,
+and other euketatins. Journal of biological chemistry, 128, pp.181-186.
+
+Chen, L., Li, B., Li, D., Gan, J., Jiang, W. and Kitamura, Y., 2008.
+Ultrasound-assisted hydrolysis and acidogenesis of solid organic wastes
+in a rotational drum fermentation system. Bioresource technology,
+99(17), pp.8337-8343.
+
+Cheung, P., 2004. Anaerobic digestion on swine manure: inhibition by
+ammonia and hydrogen sulfide (Doctoral dissertation, University of
+Guelph).
+
+Dai, X., Hu, C., Zhang, D., Dai, L. and Duan, N., 2017. Impact of a high
+ammonia-ammonium-pH system on methane-producing archaea and
+sulfate-reducing bacteria in mesophilic anaerobic digestion. Bioresource
+technology, 245, pp.598-605.
+
+Deublein, D. and Steinhauser, A., 2008. Biogas from waste and renewable
+resources: Formation of biogas.
+
+Duan, N., Dong, B., Wu, B. and Dai, X., 2012. High-solid anaerobic
+digestion of sewage sludge under mesophilic conditions: feasibility
+study. Bioresource technology, 104, pp.150-156.
+
+Firkins, J.L., Fowler, C.M., Devillard, E. and Bequette, B.J., 2015.
+Kinetics of microbial methionine metabolism in continuous cultures
+administered different methionine sources. Journal of Dairy Science,
+98(2), pp.1178-1194.
+
+Fischer, J.R., Iannotti, E.L. and Porter, J.H., 1984. Anaerobic
+digestion of swine manure at various influent solids concentrations.
+Agricultural Wastes, 11(3), pp.157-166.
+
+Fricke, K., Santen, H., Wallmann, R., Hüttner, A. and Dichtl, N., 2007.
+Operating problems in anaerobic digestion plants resulting from nitrogen
+in MSW. Waste Management, 27(1), pp.30-43.
+
+Friedrich, A.B. and Antranikian, G., 1996. Keratin degradation by
+Fervidobacterium pennavorans, a novel thermophilic anaerobic species of
+the order Thermotogales. Applied and environmental microbiology, 62(8),
+pp.2875-2882.
+
+Gao, L., Hu, H., Sui, X., Chen, C. and Chen, Q., 2014. One for two:
+Conversion of waste chicken feathers to carbon microspheres and (NH4)
+HCO3. Environmental science & technology, 48(11), pp.6500-6507.
+
+Gelegenis, J., Georgakakis, D., Angelidaki, I. and Mavris, V., 2007.
+Optimization of biogas production by co-digesting whey with diluted
+poultry manure. Renewable energy, 32(13), pp.2147-2160.
+
+Gupta, R. and Ramnani, P., 2006. Microbial keratinases and their
+prospective applications: an overview. Applied microbiology and
+biotechnology, 70, pp.21-33.
+
+Hansen, K.H., Angelidaki, I. and Ahring, B.K., 1998. Anaerobic digestion
+of swine manure: inhibition by ammonia. Water research, 32(1), pp.5-12.
+
+Hejnfelt, A. and Angelidaki, I., 2009. Anaerobic digestion of
+slaughterhouse by-products. Biomass and bioenergy, 33(8), pp.1046-1054.
+
+Hill, D.T. and Bolte, J.P., 1989. Digester stress as related to
+iso-butyric and iso-valeric acids. Biological Wastes, 28(1), pp.33-37.
+
+Hill, D.T. and Holmberg, R.D., 1988. Long chain volatile fatty acid
+relationships in anaerobic digestion of swine waste. Biological wastes,
+23(3), pp.195-214.
+
+Hwang, M.H., Jang, N.J., Hyun, S.H. and Kim, I.S., 2004. Anaerobic
+bio-hydrogen production from ethanol fermentation: the role of pH.
+Journal of Biotechnology, 111(3), pp.297-309.
+
+Jacobson, K.H., Lee, S., McKenzie, D., Benson, C.H. and Pedersen, J.A.,
+2009. Transport of the pathogenic prion protein through landfill
+materials. Environmental science & technology, 43(6), pp.2022-2028.
+
+Kannan, P.S., Muthukannan, M., Ganesh, K. and Janani, R., 2024.
+Evaluation of the Effect of Adding Rock Phosphate to Anaerobic Digestion
+of Waste Chicken Feathers for Biogas Production. Waste and Biomass
+Valorization, pp.1-9.
+
+Kassell, B. and Brand, E., 1938. The distribution of the sulphur in
+casein, lactalbumin, edestin, and papain.
+
+Kotsyurbenko, O.R., Chin, K.J., Glagolev, M.V., Stubner, S., Simankova,
+M.V., Nozhevnikova, A.N. and Conrad, R., 2004. Acetoclastic and
+hydrogenotrophic methane production and methanogenic populations in an
+acidic West‐Siberian peat bog. Environmental microbiology, 6(11),
+pp.1159-1173.
+
+Kunert, J., 1972. Keratin decomposition by dermatophytes: evidence of
+the sulphitolysis of the protein.
+
+Leon, N.H., 1972. Structural aspects of keratin fibres. J Soc Cosmet
+Chem, 23, pp.427-445.
+
+Li, D., Zhou, T., Chen, L., Jiang, W., Cheng, F., Li, B. and Kitamura,
+Y., 2009. Using porphyritic andesite as a new additive for improving
+hydrolysis and acidogenesis of solid organic wastes. Bioresource
+technology, 100(23), pp.5594-5599.
+
+Liu, Y., Zhang, Y. and Ni, B.J., 2015. Zero valent iron simultaneously
+enhances methane production and sulfate reduction in anaerobic granular
+sludge reactors. Water research, 75, pp.292-300.
+
+McCarty, P.L., 1964. Anaerobic waste treatment fundamentals. Public
+works, 95(9), pp.107-112.
+
+Microsoft Corporation, 2018. Microsoft Excel, Available at:
+https://office.microsoft.com/excel
+
+Parkin, G.F., Lynch, N.A., Kuo, W.C., Van Keuren, E.L. and Bhattacharya,
+S.K., 1990. Interaction between sulfate reducers and methanogens fed
+acetate and propionate. Research Journal of the Water Pollution Control
+Federation, pp.780-788.
+
+Patinvoh, R.J., Feuk-Lagerstedt, E., Lundin, M., Sárvári Horváth, I. and
+Taherzadeh, M.J., 2016. Biological pretreatment of chicken feather and
+biogas production from total broth. Applied biochemistry and
+biotechnology, 180, pp.1401-1415.
+
+Paul, T., Halder, S.K., Das, A., Bera, S., Maity, C., Mandal, A., Das,
+P.S., Mohapatra, P.K.D., Pati, B.R. and Mondal, K.C., 2013. Exploitation
+of chicken feather waste as a plant growth promoting agent using
+keratinase producing novel isolate Paenibacillus woosongensis TKB2.
+Biocatalysis and Agricultural Biotechnology, 2(1), pp.50-57.
+
+R Core Team., 2023. R: A language and environment for statistical
+computing (Version 4.3.3) \[Software\]. R Foundation for Statistical
+Computing, Vienna, Austria. URL https://www.R-project.org/.
+
+Rönnow, P.H. and Gunnarsson, L.Å., 1981. Sulfide-dependent methane
+production and growth of a thermophilic methanogenic bacterium. Applied
+and Environmental Microbiology, 42(4), pp.580-584.
+
+Rönnow, P.H. and Gunnarsson, L.Å., 1982. Response of growth and methane
+production to limiting amounts of sulfide and ammonia in two
+thermophilic methanogenic bacteria. FEMS Microbiology Letters, 14(4),
+pp.311-315.
+
+Siegert, I. and Banks, C., 2005. The effect of volatile fatty acid
+additions on the anaerobic digestion of cellulose and glucose in batch
+reactors. Process Biochemistry, 40(11), pp.3412-3418.
+
+Sürmeli, R.Ö., Bayrakdar, A., Molaey, R. and Çalli, B., 2019.
+Synergistic effect of sulfide and ammonia on anaerobic digestion of
+chicken manure. Waste and biomass valorization, 10, pp.609-615.
+
+Tesfaye, T., Sithole, B. and Ramjugernath, D., 2017. Valorisation of
+chicken feathers: a review on recycling and recovery route—current
+status and future prospects. Clean Technologies and Environmental
+Policy, 19, pp.2363-2378.
+
+Tian, G., Xi, J., Yeung, M. and Ren, G., 2020. Characteristics and
+mechanisms of H2S production in anaerobic digestion of food waste.
+Science of the total environment, 724, p.137977.
+
+Tursman, J.F. and Cork, D.J., 1989. Influence of sulfate and
+sulfate-reducing bacteria on anaerobic digestion technology. Advances in
+biotechnological processes, 12, pp.273-285.
+
+Vu, H.P., Nguyen, L.N., Wang, Q., Ngo, H.H., Liu, Q., Zhang, X. and
+Nghiem, L.D., 2022. Hydrogen sulphide management in anaerobic digestion:
+A critical review on input control, process regulation, and
+post-treatment. Bioresource Technology, 346, p.126634.
+
+Wang, Y.X., Li, W.Q., He, C.S., Zhou, G.N., Yang, H.Y., Han, J.C.,
+Huang, S.Q. and Mu, Y., 2020. Efficient bioanode from poultry feather
+wastes-derived N-doped activated carbon: Performance and mechanisms.
+Journal of cleaner production, 271, p.122012.
+
+Wickham, H., Averick, M., Bryan, J., Chang, W., D’Agostino McGowan, L.,
+François, R., Grolemund, G., et al. 2019. “Welcome to the Tidyverse.”
+Journal of Open Source Software 4: 1686.
+
+Xia, Y., Massé, D.I., McAllister, T.A., Beaulieu, C. and Ungerfeld, E.,
+2012. Anaerobic digestion of chicken feather with swine manure or
+slaughterhouse sludge for biogas production. Waste management, 32(3),
+pp.404-409.
+
+Xu, Y., Lu, Y., Zheng, L., Wang, Z. and Dai, X., 2020. Perspective on
+enhancing the anaerobic digestion of waste activated sludge. Journal of
+Hazardous Materials, 389, p.121847.
+
+Yan, L., Ye, J., Zhang, P., Xu, D., Wu, Y., Liu, J., Zhang, H., Fang,
+W., Wang, B. and Zeng, G., 2018. Hydrogen sulfide formation control and
+microbial competition in batch anaerobic digestion of slaughterhouse
+wastewater sludge: Effect of initial sludge pH. Bioresource technology,
+259, pp.67-74.
+
+Yekta, S.S., Elreedy, A., Liu, T., Hedenström, M., Isaksson, S., Fujii,
+M. and Schnürer, A., 2022. Influence of cysteine, serine, sulfate, and
+sulfide on anaerobic conversion of unsaturated long-chain fatty acid,
+oleate, to methane. Science of the Total Environment, 817, p.152967.
+
+Zan, F., Zeng, Q., Hao, T., Ekama, G.A., Hao, X. and Chen, G., 2019.
+Achieving methane production enhancement from waste activated sludge
+with sulfite pretreatment: Feasibility, kinetics and mechanism study.
+Water research, 158, pp.438-448.
+
+Zhang, H., Zhang, X., Chen, Z., Liu, S., Nai, C., Ma, Y. and Zhang, H.,
+2022. Sulfate affects the anaerobic digestion process treating
+nitrogenous fertilizer wastewater. Biochemical Engineering Journal, 186,
+p.108550.
+
+Zhang, T., Mao, C., Zhai, N., Wang, X. and Yang, G., 2015. Influence of
+initial pH on thermophilic anaerobic co-digestion of swine manure and
+maize stalk. Waste Management, 35, pp.119-126.
+
+Zhang, Z.Y. and Maekawa, T., 1996. Effects of sulfur-containing
+compounds on the growth and methane production of acclimated-mixed
+methanogens. Biomass and Bioenergy, 10(1), pp.45-56.
+
+Zhang, Z., Zhang, G., Li, W., Li, C. and Xu, G., 2016. Enhanced biogas
+production from sorghum stem by co-digestion with cow manure.
+International Journal of Hydrogen Energy, 41(21), pp.9153-9158.
